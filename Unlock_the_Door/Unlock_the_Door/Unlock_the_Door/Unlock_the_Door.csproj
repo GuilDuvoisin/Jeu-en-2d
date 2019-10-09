@@ -48,6 +48,9 @@
   <ItemGroup>
     <Compile Include="Doors.cs" />
     <Compile Include="DoorsOutputs.cs" />
+    <Compile Include="Fireballs.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -27,6 +27,9 @@ namespace Unlock_the_Door
         Spikes spike;
             //Déclaration des slims
         Slims slim;
+        //Déclaration des fireballs
+        List<Fireballs> fireballs = new List<Fireballs>();
+        //Déclaration et instanciation des fireballs
             //Déclaration des sprites
         PictureBox pbPlayer;
         public frmMainWindow()
@@ -51,6 +54,16 @@ namespace Unlock_the_Door
                 case Keys.E:
                     player.Action = true;
                     break;
+                case Keys.Left:
+                    Fireballs fireL = new Fireballs(false);
+                    CreateFB(fireL, "fireL", 27, 27, pbPlayer.Left, pbPlayer.Top, Application.StartupPath + @"\res\fireball.png", "fireballs");
+                    fireballs.Add(fireL);
+                    break;
+                case Keys.Right:
+                    Fireballs fireR = new Fireballs(true);
+                    CreateFB(fireR, "fireR", 27, 27, pbPlayer.Right, pbPlayer.Top, Application.StartupPath + @"\res\fireball.png", "fireballs");
+                    fireballs.Add(fireR);
+                    break;
                 default:
                     break;
             }
@@ -74,8 +87,7 @@ namespace Unlock_the_Door
             }
             if (player.Jump) { player.Jump = false; }
         }
-        //Idée: Créer un ou plusieurs autre timer pour séparer les actions qu'ils contiennent (lisibilité du code)
-        //1 timer pour les annimations, 1 timer pour les actions, 1 timer pour les déplacements et collisions
+
         private void tmrMain_Tick(object sender, EventArgs e)
         {
             if (player.Jump && player.Inertia < 0) { player.Jump = false; }
@@ -163,6 +175,48 @@ namespace Unlock_the_Door
                 }
             }
             player.MoveUp(player.CollisionBottom);
+            foreach (var fire in fireballs)
+            {
+                fire.CollisionBottom = false;
+                //Collison
+                foreach (Control ctrl in this.Controls)
+                {
+                    
+                    if (ctrl.GetType().IsSubclassOf(typeof(PictureBox))|| ctrl.GetType() == typeof(PictureBox))
+                    {
+                        switch (ctrl.Tag)
+                        {
+                            case "spikes":
+                                if (fire.Bounds.IntersectsWith(ctrl.Bounds))
+                                {
+                                    fire.Ttl = 0;
+                                } 
+                                break;
+                            case "platform":
+                                if (fire.Bottom >= ctrl.Top && fire.Top < ctrl.Top && fire.Left < ctrl.Right && fire.Right > ctrl.Left)
+                                {
+                                    fire.Top = ctrl.Top - fire.Height;
+
+                                    //si la fireball touche le sol
+                                    fire.CollisionBottom = true;
+                                }
+                                else if (fire.Bounds.IntersectsWith(ctrl.Bounds))
+                                {
+                                    fire.Ttl = 0;
+                                }
+                                break;
+                            case "slims":
+                                if (fire.Bounds.IntersectsWith(ctrl.Bounds))
+                                {
+                                    fire.Ttl = 0;
+                                }
+                                break;
+                        }
+                    }
+                    
+                }
+                if(fire.Ttl > 0) fire.MoveUp(fire.CollisionBottom);
+            }  
         }
 
         private void tmrAction_Tick(object sender, EventArgs e)
@@ -264,6 +318,9 @@ namespace Unlock_the_Door
                             player.RefillInertia();
                             player.Jump = true;
                         }
+                        break;
+                    case "fireballs":
+                        
                         break;
                     default:
                         break;
@@ -410,6 +467,64 @@ namespace Unlock_the_Door
                     
                 }
             }
+            //fireballs animation
+            try
+            {
+                foreach (var fireball in fireballs)
+                {
+                    fireball.BringToFront();
+                    fireball.Animation();
+                    if (fireball.Ttl > 0)
+                    {
+                        if (fireball.GoRight)
+                        {
+                            fireball.Left += fireball.Speed;
+                        }
+                        else
+                        {
+                            fireball.Left -= fireball.Speed;
+                        }
+                    }
+                    else
+                    {
+                        if (fireball.TimerSmoke > 0)
+                        {
+                            switch (fireball.TimerSmoke)
+                            {
+                                case 6:
+                                case 5:
+                                    fireball.Image = Image.FromFile(Application.StartupPath + @"\res\smoke.gray.1.png");
+                                    fireball.SizeMode = PictureBoxSizeMode.StretchImage;
+                                    fireball.TimerSmoke -= 1;
+                                    break;
+                                case 4:
+                                case 3:
+                                    fireball.Image = Image.FromFile(Application.StartupPath + @"\res\smoke.gray.2.png");
+                                    fireball.SizeMode = PictureBoxSizeMode.StretchImage;
+                                    fireball.TimerSmoke -= 1;
+                                    break;
+                                case 2:
+                                case 1:
+                                    fireball.Image = Image.FromFile(Application.StartupPath + @"\res\smoke.gray.3.png");
+                                    fireball.SizeMode = PictureBoxSizeMode.StretchImage;
+                                    fireball.TimerSmoke -= 1;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            fireballs.Remove(fireball);
+                            fireball.Dispose();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
         }
 
         private void Level1()
@@ -480,7 +595,7 @@ namespace Unlock_the_Door
             CreatePB(pbPlateformBase, "pbPlateformBase", 3072, 70, 10, 900, Application.StartupPath + @"\res\base.png", "platform");
             CreatePB(pbBloc1, "pbBloc1", 70, 70, 1000, 830, Application.StartupPath + @"\res\stone.broken.1.png", "platform");
                 //Initialisation des sprites de slims
-            CreatePB(pbSlim1, "pbSlim1", 70, 70, 2050, 865, Application.StartupPath + @"\res\slime.right.1.png", "slims");
+            CreatePB(pbSlim1, "pbSlim1", 60, 60, 2050, 865, Application.StartupPath + @"\res\slime.right.1.png", "slims");
                 //Initialisation des sprites de clés
             CreatePB(pbBlueKey, "pbBlueKey", 70, 65, 1300, 830, Application.StartupPath + @"\res\key.blue.png", "key");
             CreatePB(pbRedKey, "pbRedKey", 70, 65, 1380, 830, Application.StartupPath + @"\res\key.red.png", "key");
@@ -495,6 +610,19 @@ namespace Unlock_the_Door
         private void CreatePB(PictureBox pbName, string name,int width, int height, int xLoc, int yLoc, string path, string tag)
         {
             pbName.Parent = this;
+            pbName.Name = name;
+            pbName.Width = width;
+            pbName.Height = height;
+            pbName.Location = new Point(xLoc, yLoc);
+            pbName.BackColor = Color.Transparent;
+            pbName.Image = Image.FromFile(path);
+            pbName.Tag = tag;
+            pbName.BringToFront();
+            this.Controls.Add(pbName);
+        }
+        private void CreateFB(Fireballs pbName, string name, int width, int height, int xLoc, int yLoc, string path, string tag)
+        {
+            
             pbName.Name = name;
             pbName.Width = width;
             pbName.Height = height;
@@ -520,7 +648,7 @@ namespace Unlock_the_Door
 
                 foreach (Control child in ctrl.Controls)
                 {
-                    if (child.GetType() == type)
+                    if (child.GetType() == type || child.GetType().IsSubclassOf(type))
                     {
                         controls.Add(child);
                     }

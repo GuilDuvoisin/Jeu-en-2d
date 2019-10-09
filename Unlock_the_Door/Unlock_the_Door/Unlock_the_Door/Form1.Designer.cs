@@ -33,6 +33,7 @@
             this.tmrAction = new System.Windows.Forms.Timer(this.components);
             this.tmrAnimations = new System.Windows.Forms.Timer(this.components);
             this.tmrDelays = new System.Windows.Forms.Timer(this.components);
+            this.bwBackWork1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // tmrMain
@@ -80,6 +81,7 @@
         private System.Windows.Forms.Timer tmrAction;
         private System.Windows.Forms.Timer tmrAnimations;
         private System.Windows.Forms.Timer tmrDelays;
+        private System.ComponentModel.BackgroundWorker bwBackWork1;
     }
 }
 
