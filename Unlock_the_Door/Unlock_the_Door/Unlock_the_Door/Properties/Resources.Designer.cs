@@ -73,16 +73,6 @@ namespace Unlock_the_Door.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap background_grass {
-            get {
-                object obj = ResourceManager.GetObject("background.grass", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap blocker_dead {
             get {
                 object obj = ResourceManager.GetObject("blocker_dead", resourceCulture);
@@ -146,6 +136,16 @@ namespace Unlock_the_Door.Properties {
         internal static System.Drawing.Bitmap stone_broken_4 {
             get {
                 object obj = ResourceManager.GetObject("stone_broken_4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap thumb_1920_574726 {
+            get {
+                object obj = ResourceManager.GetObject("thumb-1920-574726", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

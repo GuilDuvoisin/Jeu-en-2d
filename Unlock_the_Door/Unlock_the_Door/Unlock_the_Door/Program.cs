@@ -16,7 +16,7 @@ namespace Unlock_the_Door
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMainWindow());
+            Application.Run(new frmGame());
         }
     }
 }
